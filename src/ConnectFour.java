@@ -3,14 +3,29 @@ import java.util.*;
 
 public class ConnectFour {
 
+    /**
+     * Set to store player 1 moves
+     */
     private Set<Map.Entry<Integer, Integer>> player1Moves;
 
+    /**
+     * Set to store player 2 moves
+     */
     private Set<Map.Entry<Integer, Integer>> player2Moves;
-    
+
+    /**
+     * List to represent and store the board
+     */
     private ArrayList<ArrayList<Integer>> board;
 
+    /**
+     * Player 1 Name
+     */
     private String player1;
 
+    /**
+     * Player 2 Name
+     */
     private String player2;
 
     private static int currentPlayer = 1;
