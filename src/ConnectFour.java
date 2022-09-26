@@ -102,6 +102,10 @@ public class ConnectFour {
         }
     }
 
+    /**
+     * returns the string of the board with all moves of all players
+     * @return the string of the board with all moves of all players
+     */
     public String displayBoard() {
         StringBuilder board = new StringBuilder();
 
@@ -121,41 +125,89 @@ public class ConnectFour {
 
     }
 
+    /**
+     * Returns 'true' if the current player wins the game, 'false' otherwise. Checks all moves of the current player to see if there are 4
+     * consecutive winning moves made by the player.
+     * @return 'true' if the current player wins the game, 'false' otherwise.
+     */
     public boolean didPlayerWin() {
+        Set<Map.Entry<Integer, Integer>> playerMoves = currentPlayer().equals(player1) ? player1Moves : player2Moves;
 
+        for(Map.Entry<Integer, Integer> e: playerMoves) {
+            if(checkIfPlayerWins(playerMoves, e.getKey(), e.getValue())) return true;
+        }
 
-
-        return true;
+        return false;
     }
 
-    private boolean checkForwardDiagonalUpward(int x, int y, int count) {
+    private boolean checkIfPlayerWins(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y) {
 
-        if(!player1Moves.contains(Map.entry(x, y))) return false;
-        if(count == 4) return true;
-
-        return checkForwardDiagonalUpward(x+1, y+1, count+1);
+        return checkForwardDiagonalUpward(playerMoves, x, y, 1) ||
+        checkForwardDiagonalDownward(playerMoves, x, y, 1) ||
+        checkBackwardDiagonalUpward(playerMoves, x, y, 1) ||
+        checkBackwardDiagonalDownward(playerMoves, x, y, 1) ||
+        checkRowForward(playerMoves, x, y, 1) ||
+        checkRowBackward(playerMoves, x, y, 1) ||
+        checkColumnDownward(playerMoves, x, y, 1) ||
+        checkColumnUpward(playerMoves, x, y, 1);
     }
 
-    private boolean checkForwardDiagonalDownward(int x, int y, int count) {
-        if(count == 4) return true;
-        if(!player1Moves.contains(Map.entry(x, y))) return false;
+    private boolean checkForwardDiagonalUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
 
-        return checkForwardDiagonalDownward(x-1, y+1, count+1);
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+        if(count == 4) return true;
+
+        return checkForwardDiagonalUpward(playerMoves, x+1, y+1, count+1);
     }
 
-    private boolean checkBackwardDiagonalUpward(int x, int y, int count) {
-
-        if(!player1Moves.contains(Map.entry(x, y))) return false;
+    private boolean checkForwardDiagonalDownward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
 
-        return checkBackwardDiagonalUpward(x+1, y+1, count+1);
+        return checkForwardDiagonalDownward(playerMoves, x-1, y+1, count+1);
     }
 
-    private boolean checkBackwardDiagonalDownward(int x, int y, int count) {
-        if(count == 4) return true;
-        if(!player1Moves.contains(Map.entry(x, y))) return false;
+    private boolean checkBackwardDiagonalUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
 
-        return checkBackwardDiagonalDownward(x-1, y-1, count+1);
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+        if(count == 4) return true;
+
+        return checkBackwardDiagonalUpward(playerMoves, x+1, y+1, count+1);
+    }
+
+    private boolean checkBackwardDiagonalDownward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
+        if(count == 4) return true;
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+
+        return checkBackwardDiagonalDownward(playerMoves, x-1, y-1, count+1);
+    }
+
+    private boolean checkRowForward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
+        if(count == 4) return true;
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+
+        return checkRowForward(playerMoves, x, y+1, count+1);
+    }
+
+    private boolean checkRowBackward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
+        if(count == 4) return true;
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+
+        return checkRowBackward(playerMoves, x, y-1, count+1);
+    }
+
+    private boolean checkColumnDownward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
+        if(count == 4) return true;
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+
+        return checkColumnDownward(playerMoves, x+1, y, count+1);
+    }
+
+    private boolean checkColumnUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
+        if(count == 4) return true;
+        if(!playerMoves.contains(Map.entry(x, y))) return false;
+
+        return checkColumnUpward(playerMoves, x-1, y, count+1);
     }
 
 
