@@ -62,6 +62,45 @@ public class ConnectFour {
 
     }
 
+    public boolean didPlayerWin() {
+
+
+
+        return true;
+    }
+
+    private boolean checkForwardDiagonalUpward(int x, int y, int count) {
+
+        if(!player1Moves.contains(Map.entry(x, y))) return false;
+        if(count == 4) return true;
+
+        return checkForwardDiagonalUpward(x+1, y+1, count+1);
+    }
+
+    private boolean checkForwardDiagonalDownward(int x, int y, int count) {
+        if(count == 4) return true;
+        if(!player1Moves.contains(Map.entry(x, y))) return false;
+
+        return checkForwardDiagonalDownward(x-1, y+1, count+1);
+    }
+
+    private boolean checkBackwardDiagonalUpward(int x, int y, int count) {
+
+        if(!player1Moves.contains(Map.entry(x, y))) return false;
+        if(count == 4) return true;
+
+        return checkBackwardDiagonalUpward(x+1, y+1, count+1);
+    }
+
+    private boolean checkBackwardDiagonalDownward(int x, int y, int count) {
+        if(count == 4) return true;
+        if(!player1Moves.contains(Map.entry(x, y))) return false;
+
+        return checkBackwardDiagonalDownward(x-1, y-1, count+1);
+    }
+
+
+
 
 
 
