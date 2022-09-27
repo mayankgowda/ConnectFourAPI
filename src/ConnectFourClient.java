@@ -1,8 +1,9 @@
+
 import java.util.Scanner;
 
 public class ConnectFourClient {
 
-    public static void main(String[] args) throws InvalidMoveException {
+    public static void main(String[] args) throws connectfour.InvalidMoveException {
         Scanner input = new Scanner(System.in);
 
         System.out.println("Please enter player 1 name");
@@ -11,9 +12,10 @@ public class ConnectFourClient {
         System.out.println("Please enter player 2 name");
         String player2Name = input.nextLine();
 
-        ConnectFour connectFour = new ConnectFour(player1Name, player2Name);
+        connectfour.ConnectFour connectFour = new connectfour.ConnectFour(player1Name, player2Name);
 
         connectFour.startGame(input);
 
     }
 }
+

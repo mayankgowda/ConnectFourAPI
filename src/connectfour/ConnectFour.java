@@ -1,15 +1,18 @@
+package connectfour;
+
 import java.util.*;
 
 /**
  * ConnectFour is a class that is used to play the connect four with 2 players.
  *
  * Sample Code:
+ * <pre>
  *
  * import java.util.Scanner;
  *
  * public class ConnectFourClient {
  *
- *     public static void main(String[] args) throws InvalidMoveException {
+ *     public static void main(String[] args) throws connectfour.InvalidMoveException {
  *         Scanner input = new Scanner(System.in);
  *
  *         System.out.println("Please enter player 1 name");
@@ -18,12 +21,13 @@ import java.util.*;
  *         System.out.println("Please enter player 2 name");
  *         String player2Name = input.nextLine();
  *
- *         ConnectFour connectFour = new ConnectFour(player1Name, player2Name);
+ *         connectfour.ConnectFour connectFour = new connectfour.ConnectFour(player1Name, player2Name);
  *
  *         connectFour.startGame(input);
  *
  *     }
  * }
+ * </pre>
  */
 public class ConnectFour {
 
@@ -63,7 +67,7 @@ public class ConnectFour {
     private static int currentPlayer = 1;
 
     /**
-     * Constructor method to create an instance of ConnectFour.
+     * Constructor method to create an instance of connectfour.ConnectFour.
      * @param player1Name name of player 1
      * @param player2Name name of player 2
      */
@@ -80,9 +84,8 @@ public class ConnectFour {
     /**
      * Starts game. Accepts a scanner to get player moves from. The client typically creates a scanner that reads input from the console.
      * @param input Scanner type object to get player moves from
-     * @throws InvalidMoveException
      */
-    public void startGame(Scanner input) throws InvalidMoveException {
+    public void startGame(Scanner input) {
 
         while(true) {
             try {
@@ -118,7 +121,7 @@ public class ConnectFour {
     }
 
     /**
-     * This methods determines if a potential move is valid by the ConnectFour rules.
+     * This methods determines if a potential move is valid by the connectfour.ConnectFour rules.
      * @param column, an integer which corresponds to the column the next chip would be placed in
      * @return a boolean, true if the move is to a valid place on the board.
      */
