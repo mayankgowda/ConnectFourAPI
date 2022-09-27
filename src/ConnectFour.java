@@ -1,6 +1,30 @@
-import java.security.KeyPair;
 import java.util.*;
 
+/**
+ * ConnectFour is a class that is used to play the connect four with 2 players.
+ *
+ * Sample Code:
+ *
+ * import java.util.Scanner;
+ *
+ * public class ConnectFourClient {
+ *
+ *     public static void main(String[] args) throws InvalidMoveException {
+ *         Scanner input = new Scanner(System.in);
+ *
+ *         System.out.println("Please enter player 1 name");
+ *         String player1Name = input.nextLine();
+ *
+ *         System.out.println("Please enter player 2 name");
+ *         String player2Name = input.nextLine();
+ *
+ *         ConnectFour connectFour = new ConnectFour(player1Name, player2Name);
+ *
+ *         connectFour.startGame(input);
+ *
+ *     }
+ * }
+ */
 public class ConnectFour {
 
     /**
@@ -12,16 +36,16 @@ public class ConnectFour {
      * Set to store player 2 moves
      */
     private Set<Map.Entry<Integer, Integer>> player2Moves;
-<<<<<<< Updated upstream
 
     /**
      * List to represent and store the board
      */
     private ArrayList<ArrayList<Integer>> board;
-=======
-    
+
+    /**
+     * Array to store valid empty index in each column
+     */
     private int[] currentColumnHeight;
->>>>>>> Stashed changes
 
     /**
      * Player 1 Name
@@ -33,16 +57,16 @@ public class ConnectFour {
      */
     private String player2;
 
-    private List<Integer> firstAvailableSlot = new ArrayList<>(7); 0 0 2 2 0 1 1
-
-            0 0 0 0 0 0 0
-             0 0 0 0 0 0 0
-             0 0 0 0 0 0 0
-             0 0 1 1 0 0 0
-             0 0 1 2 0 2 2
-
+    /**
+     * Static integer to hold current player
+     */
     private static int currentPlayer = 1;
 
+    /**
+     * Constructor method to create an instance of ConnectFour.
+     * @param player1Name name of player 1
+     * @param player2Name name of player 2
+     */
     public ConnectFour(String player1Name, String player2Name) {
 
         player1 = player1Name;
@@ -54,11 +78,51 @@ public class ConnectFour {
     }
 
     /**
+     * Starts game. Accepts a scanner to get player moves from. The client typically creates a scanner that reads input from the console.
+     * @param input Scanner type object to get player moves from
+     * @throws InvalidMoveException
+     */
+    public void startGame(Scanner input) throws InvalidMoveException {
+
+        while(true) {
+            try {
+                System.out.println(displayBoard());
+
+                System.out.printf("Player %s move. Select a column to make a move: ", currentPlayer());
+
+                int col = -1;
+                try {
+                    col = input.nextInt();
+                } catch (Exception e) {
+                    throw new InvalidMoveException("Invalid move made. Kindly check the move or if the scanner is still active.");
+                }
+
+                if (!isValidMove(col)) {
+                    throw new InvalidMoveException("Invalid move made. Please enter a valid move.");
+                }
+
+                makeMove(col);
+
+                if (didPlayerWin()) {
+                    System.out.println(displayBoard());
+                    System.out.printf("Player %s WON!!!", currentPlayer());
+                    break;
+                }
+
+                updateCurrentPlayer();
+            } catch (InvalidMoveException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+        }
+    }
+
+    /**
      * This methods determines if a potential move is valid by the ConnectFour rules.
      * @param column, an integer which corresponds to the column the next chip would be placed in
      * @return a boolean, true if the move is to a valid place on the board.
      */
-    public boolean isValidMove(Integer column) {
+    private boolean isValidMove(Integer column) {
         List<Integer> validMoves = validNextMoves();
         return validMoves.contains(column);
     }
@@ -68,30 +132,25 @@ public class ConnectFour {
      * @param column is the column which the next chip is attempting to be placed in
      * @return a boolean, true if the move was successfully made, false otherwise
      */
-<<<<<<< Updated upstream
-    public boolean makeMove(Map.Entry<Integer,Integer> move) {
-        if (!isValidMove(currentPlayer(), move)) {
-=======
-    public boolean makeMove(Integer column) {
+    private void makeMove(Integer column) throws InvalidMoveException{
         if (!isValidMove(column)) {
->>>>>>> Stashed changes
-            return false;
+            throw new InvalidMoveException("Invalid move made. Please enter a valid column value after referring to the board.");
         } else {
             Integer columnLength = currentColumnHeight[column];
-            Map.Entry<Integer,Integer> move = new AbstractMap.SimpleEntry<>(column, columnLength);
+            Map.Entry<Integer,Integer> move = new AbstractMap.SimpleEntry<>(5 - columnLength, column);
             getCurrentPlayerMoves().add(move);
             currentColumnHeight[column] += 1;
-            updateCurrentPlayer();
-            return true;
         }
     }
-    public void updateCurrentPlayer () {
+
+    private void updateCurrentPlayer () {
         if(currentPlayer == 1) {
             currentPlayer = 2;
         } else {
             currentPlayer = 1;
         }
     }
+
     private Set<Map.Entry<Integer,Integer>> getCurrentPlayerMoves () {
         if(currentPlayer == 1) {
             return player1Moves;
@@ -99,11 +158,12 @@ public class ConnectFour {
             return player2Moves;
         }
     }
+
     /**
      * This methods returns all the valid columns, which the player can place a chip.
      * @return a list of integers which correspond to valid columns where the current player can place a chip
      */
-    public List<Integer> validNextMoves() {
+    private List<Integer> validNextMoves() {
         List<Integer> validMoves = new ArrayList<>();
         for (int i = 0; i < 7 ; i++) {
             int columnLength = currentColumnHeight[i];
@@ -118,7 +178,7 @@ public class ConnectFour {
      * returns the current player who is allowed to currently place a new chip on the board
      * @return the string associated with the player whose turn it it.
      */
-    public String currentPlayer() {
+    private String currentPlayer() {
         if(currentPlayer == 1) {
             return player1;
         } else {
@@ -130,7 +190,7 @@ public class ConnectFour {
      * returns the string of the board with all moves of all players
      * @return the string of the board with all moves of all players
      */
-    public String displayBoard() {
+    private String displayBoard() {
         StringBuilder board = new StringBuilder();
 
         for(int i = 0; i < 6; i++) {
@@ -154,7 +214,7 @@ public class ConnectFour {
      * consecutive winning moves made by the player.
      * @return 'true' if the current player wins the game, 'false' otherwise.
      */
-    public boolean didPlayerWin() {
+    private boolean didPlayerWin() {
         Set<Map.Entry<Integer, Integer>> playerMoves = currentPlayer().equals(player1) ? player1Moves : player2Moves;
 
         for(Map.Entry<Integer, Integer> e: playerMoves) {
@@ -166,14 +226,14 @@ public class ConnectFour {
 
     private boolean checkIfPlayerWins(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y) {
 
-        return checkForwardDiagonalUpward(playerMoves, x, y, 1) ||
-        checkForwardDiagonalDownward(playerMoves, x, y, 1) ||
-        checkBackwardDiagonalUpward(playerMoves, x, y, 1) ||
-        checkBackwardDiagonalDownward(playerMoves, x, y, 1) ||
-        checkRowForward(playerMoves, x, y, 1) ||
-        checkRowBackward(playerMoves, x, y, 1) ||
-        checkColumnDownward(playerMoves, x, y, 1) ||
-        checkColumnUpward(playerMoves, x, y, 1);
+        return checkForwardDiagonalUpward(playerMoves, x, y, 0) ||
+        checkForwardDiagonalDownward(playerMoves, x, y, 0) ||
+        checkBackwardDiagonalUpward(playerMoves, x, y, 0) ||
+        checkBackwardDiagonalDownward(playerMoves, x, y, 0) ||
+        checkRowForward(playerMoves, x, y, 0) ||
+        checkRowBackward(playerMoves, x, y, 0) ||
+        checkColumnDownward(playerMoves, x, y, 0) ||
+        checkColumnUpward(playerMoves, x, y, 0);
     }
 
     private boolean checkForwardDiagonalUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
