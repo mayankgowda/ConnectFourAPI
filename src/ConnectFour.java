@@ -12,11 +12,16 @@ public class ConnectFour {
      * Set to store player 2 moves
      */
     private Set<Map.Entry<Integer, Integer>> player2Moves;
+<<<<<<< Updated upstream
 
     /**
      * List to represent and store the board
      */
     private ArrayList<ArrayList<Integer>> board;
+=======
+    
+    private int[] currentColumnHeight;
+>>>>>>> Stashed changes
 
     /**
      * Player 1 Name
@@ -44,40 +49,38 @@ public class ConnectFour {
         player2 = player2Name;
         player1Moves = new HashSet<Map.Entry<Integer, Integer>>();
         player2Moves = new HashSet<Map.Entry<Integer, Integer>>();
-
-        board = new ArrayList<ArrayList<Integer>>();
-        for (int i = 0; i < 7; i++) {
-            board.add(new ArrayList<Integer>());
-        }
+        currentColumnHeight = new int[7];
 
     }
 
     /**
      * This methods determines if a potential move is valid by the ConnectFour rules.
-     * @param player is the name assigned to the player that would make this potential move.
-     * @param move is the pairing (column, row) which the next chip would be placed in
-     * @return a boolean, true if the move is to a valid place on the board and if it is the specified players turn,
-     * false otherwise
+     * @param column, an integer which corresponds to the column the next chip would be placed in
+     * @return a boolean, true if the move is to a valid place on the board.
      */
-    public boolean isValidMove(String player, Map.Entry<Integer,Integer> move) {
-        List<Map.Entry<Integer,Integer>> validMoves = validNextMoves();
-        boolean isValid = validMoves.contains(move);
-        boolean isCorrectPlayer = currentPlayer().equals(player);
-        return isValid && isCorrectPlayer;
+    public boolean isValidMove(Integer column) {
+        List<Integer> validMoves = validNextMoves();
+        return validMoves.contains(column);
     }
     /**
-     * This method attempts to make a move to the specified spot on the board for the specified player,
-     * if and only if it is the specified player's turn and the specified move is a valid move
-     * @param player is the name assigned to the player making the move
-     * @param move is the pairing (column, row) which the next chip is to be placed in
+     * This method places a chip in the specified column on the board
+     * if and only if the specified column is a valid column to place a chip
+     * @param column is the column which the next chip is attempting to be placed in
      * @return a boolean, true if the move was successfully made, false otherwise
      */
+<<<<<<< Updated upstream
     public boolean makeMove(Map.Entry<Integer,Integer> move) {
         if (!isValidMove(currentPlayer(), move)) {
+=======
+    public boolean makeMove(Integer column) {
+        if (!isValidMove(column)) {
+>>>>>>> Stashed changes
             return false;
         } else {
+            Integer columnLength = currentColumnHeight[column];
+            Map.Entry<Integer,Integer> move = new AbstractMap.SimpleEntry<>(column, columnLength);
             getCurrentPlayerMoves().add(move);
-            board.get(move.getKey()).add(currentPlayer);
+            currentColumnHeight[column] += 1;
             updateCurrentPlayer();
             return true;
         }
@@ -97,17 +100,15 @@ public class ConnectFour {
         }
     }
     /**
-     * This methods returns all the valid places on the board the player can move to.
-     * @return a List of pairings,(column, row) which correspond to valid places on the board
-     * a player can make a move to according to the Connect Four rules.
+     * This methods returns all the valid columns, which the player can place a chip.
+     * @return a list of integers which correspond to valid columns where the current player can place a chip
      */
-    public List<Map.Entry<Integer,Integer>> validNextMoves() {
-        List<Map.Entry<Integer,Integer>> validMoves = new ArrayList<>();
+    public List<Integer> validNextMoves() {
+        List<Integer> validMoves = new ArrayList<>();
         for (int i = 0; i < 7 ; i++) {
-            int columnLength = board.get(i).size();
+            int columnLength = currentColumnHeight[i];
             if (columnLength < 6) {
-                Map.Entry<Integer,Integer> move = new AbstractMap.SimpleEntry<>(i,columnLength);
-                validMoves.add(move);
+                validMoves.add(i);
             }
         }
         return validMoves;
