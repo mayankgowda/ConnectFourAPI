@@ -28,6 +28,14 @@ public class ConnectFour {
      */
     private String player2;
 
+    private List<Integer> firstAvailableSlot = new ArrayList<>(7); 0 0 2 2 0 1 1
+
+            0 0 0 0 0 0 0
+             0 0 0 0 0 0 0
+             0 0 0 0 0 0 0
+             0 0 1 1 0 0 0
+             0 0 1 2 0 2 2
+
     private static int currentPlayer = 1;
 
     public ConnectFour(String player1Name, String player2Name) {
@@ -64,8 +72,8 @@ public class ConnectFour {
      * @param move is the pairing (column, row) which the next chip is to be placed in
      * @return a boolean, true if the move was successfully made, false otherwise
      */
-    public boolean makeMove(String player, Map.Entry<Integer,Integer> move) {
-        if (!isValidMove(player, move)) {
+    public boolean makeMove(Map.Entry<Integer,Integer> move) {
+        if (!isValidMove(currentPlayer(), move)) {
             return false;
         } else {
             getCurrentPlayerMoves().add(move);
@@ -74,7 +82,7 @@ public class ConnectFour {
             return true;
         }
     }
-    private void updateCurrentPlayer () {
+    public void updateCurrentPlayer () {
         if(currentPlayer == 1) {
             currentPlayer = 2;
         } else {
