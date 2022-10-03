@@ -14,7 +14,7 @@ public class ConnectFourClient {
 
         connectfour.ConnectFour connectFour = new connectfour.ConnectFour(player1Name, player2Name);
 
-        connectFour.startGame(input);
+        connectFour.startGameBetweenTwoPLayers(input);
 
     }
 }

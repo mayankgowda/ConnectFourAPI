@@ -82,16 +82,56 @@ public class ConnectFour {
     }
 
     /**
+     * Returns the moves made by player1
+     * @return the moves made by player1
+     */
+    public Set<Map.Entry<Integer, Integer>> getPlayer1Moves() {
+        return player1Moves;
+    }
+
+    /**
+     * Returns the moves made by player2
+     * @return the moves made by player2
+     */
+    public Set<Map.Entry<Integer, Integer>> getPlayer2Moves() {
+        return player2Moves;
+    }
+
+    /**
+     * Returns the board as an ArrayList of ArrayList
+     * @return the board as an ArrayList of ArrayList
+     */
+    public ArrayList<ArrayList<Integer>> getBoard() {
+        return board;
+    }
+
+    /**
+     * Returns the player 1 name
+     * @return the player 1 name
+     */
+    public String getPlayer1() {
+        return player1;
+    }
+
+    /**
+     * Returns the player 2 name
+     * @return the player 2 name
+     */
+    public String getPlayer2() {
+        return player2;
+    }
+
+    /**
      * Starts game. Accepts a scanner to get player moves from. The client typically creates a scanner that reads input from the console.
      * @param input Scanner type object to get player moves from
      */
-    public void startGame(Scanner input) {
+    public void startGameBetweenTwoPLayers(Scanner input) {
 
         while(true) {
             try {
                 System.out.println(displayBoard());
 
-                System.out.printf("Player %s move. Select a column to make a move: ", currentPlayer());
+                System.out.printf("Player %s move. Select a column to make a move: ", getCurrentPlayer());
 
                 int col = -1;
                 try {
@@ -108,7 +148,7 @@ public class ConnectFour {
 
                 if (didPlayerWin()) {
                     System.out.println(displayBoard());
-                    System.out.printf("Player %s WON!!!", currentPlayer());
+                    System.out.printf("Player %s WON!!!", getCurrentPlayer());
                     break;
                 }
 
@@ -120,12 +160,16 @@ public class ConnectFour {
         }
     }
 
+    public void makeComputerMove() {
+        
+    }
+
     /**
      * This methods determines if a potential move is valid by the connectfour.ConnectFour rules.
      * @param column, an integer which corresponds to the column the next chip would be placed in
      * @return a boolean, true if the move is to a valid place on the board.
      */
-    private boolean isValidMove(Integer column) {
+    public boolean isValidMove(Integer column) {
         List<Integer> validMoves = validNextMoves();
         return validMoves.contains(column);
     }
@@ -135,7 +179,7 @@ public class ConnectFour {
      * @param column is the column which the next chip is attempting to be placed in
      * @return a boolean, true if the move was successfully made, false otherwise
      */
-    private void makeMove(Integer column) throws InvalidMoveException{
+    public void makeMove(Integer column) throws InvalidMoveException{
         if (!isValidMove(column)) {
             throw new InvalidMoveException("Invalid move made. Please enter a valid column value after referring to the board.");
         } else {
@@ -146,7 +190,10 @@ public class ConnectFour {
         }
     }
 
-    private void updateCurrentPlayer () {
+    /**
+     * Updates/Toggles the current player.
+     */
+    public void updateCurrentPlayer () {
         if(currentPlayer == 1) {
             currentPlayer = 2;
         } else {
@@ -154,7 +201,11 @@ public class ConnectFour {
         }
     }
 
-    private Set<Map.Entry<Integer,Integer>> getCurrentPlayerMoves () {
+    /**
+     * Returns the moves made by current player
+     * @return the moves made by current player
+     */
+    public Set<Map.Entry<Integer,Integer>> getCurrentPlayerMoves () {
         if(currentPlayer == 1) {
             return player1Moves;
         } else {
@@ -166,7 +217,7 @@ public class ConnectFour {
      * This methods returns all the valid columns, which the player can place a chip.
      * @return a list of integers which correspond to valid columns where the current player can place a chip
      */
-    private List<Integer> validNextMoves() {
+    public List<Integer> validNextMoves() {
         List<Integer> validMoves = new ArrayList<>();
         for (int i = 0; i < 7 ; i++) {
             int columnLength = currentColumnHeight[i];
@@ -181,7 +232,7 @@ public class ConnectFour {
      * returns the current player who is allowed to currently place a new chip on the board
      * @return the string associated with the player whose turn it it.
      */
-    private String currentPlayer() {
+    public String getCurrentPlayer() {
         if(currentPlayer == 1) {
             return player1;
         } else {
@@ -193,7 +244,7 @@ public class ConnectFour {
      * returns the string of the board with all moves of all players
      * @return the string of the board with all moves of all players
      */
-    private String displayBoard() {
+    public String displayBoard() {
         StringBuilder board = new StringBuilder();
 
         for(int i = 0; i < 6; i++) {
@@ -217,8 +268,8 @@ public class ConnectFour {
      * consecutive winning moves made by the player.
      * @return 'true' if the current player wins the game, 'false' otherwise.
      */
-    private boolean didPlayerWin() {
-        Set<Map.Entry<Integer, Integer>> playerMoves = currentPlayer().equals(player1) ? player1Moves : player2Moves;
+    public boolean didPlayerWin() {
+        Set<Map.Entry<Integer, Integer>> playerMoves = getCurrentPlayer().equals(player1) ? player1Moves : player2Moves;
 
         for(Map.Entry<Integer, Integer> e: playerMoves) {
             if(checkIfPlayerWins(playerMoves, e.getKey(), e.getValue())) return true;
@@ -227,7 +278,14 @@ public class ConnectFour {
         return false;
     }
 
-    private boolean checkIfPlayerWins(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y) {
+    /**
+     * Returns true, if player has won the game with current moves, else false.
+     * @param playerMoves Set of player moves to check
+     * @param x start row position to check if 4 sequential moves made
+     * @param y start column position to check if 4 sequential moves made
+     * @return true, if player has won the game with current moves, else false.
+     */
+    public boolean checkIfPlayerWins(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y) {
 
         return checkForwardDiagonalUpward(playerMoves, x, y, 0) ||
         checkForwardDiagonalDownward(playerMoves, x, y, 0) ||
@@ -239,6 +297,14 @@ public class ConnectFour {
         checkColumnUpward(playerMoves, x, y, 0);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     */
     private boolean checkForwardDiagonalUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
 
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -247,6 +313,14 @@ public class ConnectFour {
         return checkForwardDiagonalUpward(playerMoves, x+1, y+1, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) diagonally forward and upward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally forward and upward
+     */
     private boolean checkForwardDiagonalDownward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -254,6 +328,14 @@ public class ConnectFour {
         return checkForwardDiagonalDownward(playerMoves, x-1, y+1, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     */
     private boolean checkBackwardDiagonalUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
 
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -262,6 +344,14 @@ public class ConnectFour {
         return checkBackwardDiagonalUpward(playerMoves, x+1, y+1, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) diagonally backward and downward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally backward and downward
+     */
     private boolean checkBackwardDiagonalDownward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -269,6 +359,14 @@ public class ConnectFour {
         return checkBackwardDiagonalDownward(playerMoves, x-1, y-1, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) horizontally forward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) horizontally forward
+     */
     private boolean checkRowForward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -276,6 +374,14 @@ public class ConnectFour {
         return checkRowForward(playerMoves, x, y+1, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) horizontally backward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     */
     private boolean checkRowBackward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -283,6 +389,14 @@ public class ConnectFour {
         return checkRowBackward(playerMoves, x, y-1, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) vertically downward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     */
     private boolean checkColumnDownward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
         if(!playerMoves.contains(Map.entry(x, y))) return false;
@@ -290,6 +404,14 @@ public class ConnectFour {
         return checkColumnDownward(playerMoves, x+1, y, count+1);
     }
 
+    /**
+     * return true if 4 sequential player moves found starting from (x,y) vertically upward
+     * @param playerMoves player moves to check
+     * @param x start row
+     * @param y start column
+     * @param count maintain count to check recursively
+     * @return true if 4 sequential player moves found starting from (x,y) diagonally upward
+     */
     private boolean checkColumnUpward(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y, int count) {
         if(count == 4) return true;
         if(!playerMoves.contains(Map.entry(x, y))) return false;
