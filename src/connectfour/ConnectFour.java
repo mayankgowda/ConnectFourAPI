@@ -160,8 +160,19 @@ public class ConnectFour {
         }
     }
 
-    public void makeComputerMove() {
-        
+    public boolean makeComputerMove() throws InvalidMoveException {
+        Random random = new Random();
+        List<Integer> validNextMovesForComputer = validNextMoves();
+        if(validNextMovesForComputer.isEmpty()) return false;
+
+        int move = random.nextInt(7);
+        while(isValidMove(move) == false) {
+            move = random.nextInt(7);
+        }
+
+        makeMove(move);
+
+        return true;
     }
 
     /**
