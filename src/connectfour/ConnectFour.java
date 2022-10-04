@@ -160,21 +160,6 @@ public class ConnectFour {
         }
     }
 
-    public boolean makeComputerMove() throws InvalidMoveException {
-        Random random = new Random();
-        List<Integer> validNextMovesForComputer = validNextMovesForCurrentPlayer();
-        if(validNextMovesForComputer.isEmpty()) return false;
-
-        int move = random.nextInt(7);
-        while(isValidMoveForCurrentPlayer(move) == false) {
-            move = random.nextInt(7);
-        }
-
-        makeMoveForCurrentPlayer(move);
-
-        return true;
-    }
-
     /**
      * This methods determines if a potential move is valid by the connectfour.ConnectFour rules.
      * @param column, an integer which corresponds to the column the next chip would be placed in
