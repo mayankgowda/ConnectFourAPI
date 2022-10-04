@@ -125,11 +125,11 @@ public class ConnectFour {
      * Starts game. Accepts a scanner to get player moves from. The client typically creates a scanner that reads input from the console.
      * @param input Scanner type object to get player moves from
      */
-    public void startGameBetweenTwoPLayers(Scanner input) {
+    public void startTextGameBetweenTwoPLayers(Scanner input) {
 
         while(true) {
             try {
-                System.out.println(displayBoard());
+                System.out.println(getBoardString());
 
                 System.out.printf("Player %s move. Select a column to make a move: ", getCurrentPlayer());
 
@@ -140,14 +140,14 @@ public class ConnectFour {
                     throw new InvalidMoveException("Invalid move made. Kindly check the move or if the scanner is still active.");
                 }
 
-                if (!isValidMove(col)) {
+                if (!isValidMoveForCurrentPlayer(col)) {
                     throw new InvalidMoveException("Invalid move made. Please enter a valid move.");
                 }
 
-                makeMove(col);
+                makeMoveForCurrentPlayer(col);
 
-                if (didPlayerWin()) {
-                    System.out.println(displayBoard());
+                if (didCurrentPlayerWin()) {
+                    System.out.println(getBoardString());
                     System.out.printf("Player %s WON!!!", getCurrentPlayer());
                     break;
                 }
@@ -162,15 +162,15 @@ public class ConnectFour {
 
     public boolean makeComputerMove() throws InvalidMoveException {
         Random random = new Random();
-        List<Integer> validNextMovesForComputer = validNextMoves();
+        List<Integer> validNextMovesForComputer = validNextMovesForCurrentPlayer();
         if(validNextMovesForComputer.isEmpty()) return false;
 
         int move = random.nextInt(7);
-        while(isValidMove(move) == false) {
+        while(isValidMoveForCurrentPlayer(move) == false) {
             move = random.nextInt(7);
         }
 
-        makeMove(move);
+        makeMoveForCurrentPlayer(move);
 
         return true;
     }
@@ -180,8 +180,8 @@ public class ConnectFour {
      * @param column, an integer which corresponds to the column the next chip would be placed in
      * @return a boolean, true if the move is to a valid place on the board.
      */
-    public boolean isValidMove(Integer column) {
-        List<Integer> validMoves = validNextMoves();
+    public boolean isValidMoveForCurrentPlayer(Integer column) {
+        List<Integer> validMoves = validNextMovesForCurrentPlayer();
         return validMoves.contains(column);
     }
     /**
@@ -190,8 +190,8 @@ public class ConnectFour {
      * @param column is the column which the next chip is attempting to be placed in
      * @return a boolean, true if the move was successfully made, false otherwise
      */
-    public void makeMove(Integer column) throws InvalidMoveException{
-        if (!isValidMove(column)) {
+    public void makeMoveForCurrentPlayer(Integer column) throws InvalidMoveException{
+        if (!isValidMoveForCurrentPlayer(column)) {
             throw new InvalidMoveException("Invalid move made. Please enter a valid column value after referring to the board.");
         } else {
             Integer columnLength = currentColumnHeight[column];
@@ -228,7 +228,7 @@ public class ConnectFour {
      * This methods returns all the valid columns, which the player can place a chip.
      * @return a list of integers which correspond to valid columns where the current player can place a chip
      */
-    public List<Integer> validNextMoves() {
+    public List<Integer> validNextMovesForCurrentPlayer() {
         List<Integer> validMoves = new ArrayList<>();
         for (int i = 0; i < 7 ; i++) {
             int columnLength = currentColumnHeight[i];
@@ -255,7 +255,7 @@ public class ConnectFour {
      * returns the string of the board with all moves of all players
      * @return the string of the board with all moves of all players
      */
-    public String displayBoard() {
+    public String getBoardString() {
         StringBuilder board = new StringBuilder();
 
         for(int i = 0; i < 6; i++) {
@@ -279,11 +279,11 @@ public class ConnectFour {
      * consecutive winning moves made by the player.
      * @return 'true' if the current player wins the game, 'false' otherwise.
      */
-    public boolean didPlayerWin() {
+    public boolean didCurrentPlayerWin() {
         Set<Map.Entry<Integer, Integer>> playerMoves = getCurrentPlayer().equals(player1) ? player1Moves : player2Moves;
 
         for(Map.Entry<Integer, Integer> e: playerMoves) {
-            if(checkIfPlayerWins(playerMoves, e.getKey(), e.getValue())) return true;
+            if(checkIfPlayerWinsWithMoves(playerMoves, e.getKey(), e.getValue())) return true;
         }
 
         return false;
@@ -296,7 +296,7 @@ public class ConnectFour {
      * @param y start column position to check if 4 sequential moves made
      * @return true, if player has won the game with current moves, else false.
      */
-    public boolean checkIfPlayerWins(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y) {
+    private boolean checkIfPlayerWinsWithMoves(Set<Map.Entry<Integer, Integer>> playerMoves, int x, int y) {
 
         return checkForwardDiagonalUpward(playerMoves, x, y, 0) ||
         checkForwardDiagonalDownward(playerMoves, x, y, 0) ||
